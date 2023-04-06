@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getAllAsync, selectParkingSpaces, takeAsync } from '../features/parking/parkingSlice';
+import { getAllAsync, leaveAsync, selectParkingSpaces, takeAsync } from '../features/parking/parkingSlice';
 import './Parking.css';
 
 function Parking() {
@@ -47,10 +47,14 @@ function Parking() {
         <div>
             <button onClick={() => dispatch(getAllAsync())}>afficher les places</button>
             <button onClick={async () => {
-                await dispatch(takeAsync());
+                let res = await dispatch(takeAsync());
                 await dispatch(getAllAsync());
+                alert(`Vous avez la place n°${res.payload}`)
             }}>prendre un ticket</button>
-            <button onClick={() => dispatch(getAllAsync())}>liberer une place</button>
+            <button onClick={async () =>{
+                await dispatch(leaveAsync());
+                await dispatch(getAllAsync());
+            }}>liberer une place</button>
             <table>
                 <tbody>
                 {rows}

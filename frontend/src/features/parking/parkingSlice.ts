@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getAll, take } from './parkingAPI';
+import { getAll, leave, take } from './parkingAPI';
 import { RootState } from '../../app/store';
 import { useDispatch } from 'react-redux';
 import { useAppDispatch } from '../../app/hooks';
@@ -28,6 +28,17 @@ export const takeAsync = createAsyncThunk(
     'parking/take',
     async () => {
       return await take();
+    }
+);
+
+export const leaveAsync = createAsyncThunk(
+    'parking/take',
+    async () => {
+        let id = prompt('Numéro de la place');
+        if(id) {
+            return await leave(+id);
+        }
+      
     }
 );
 

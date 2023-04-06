@@ -15,3 +15,11 @@ export async function take() : Promise<number> {
     });
     return await response.json();
 }
+
+export async function leave(id: number) : Promise<void> {
+    const response = await fetch(`http://localhost:3080/parking/leave/${id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+    });
+    return await response.json();
+}
