@@ -7,7 +7,7 @@ export class ParkingController {
     constructor(private readonly parkingService: ParkingService) {}
 
     @Get('/take')
-    async take(): Promise<number> {
+    async take(): Promise<number | undefined> {
         return this.parkingService.take();
     }
 

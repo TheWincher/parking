@@ -1,9 +1,10 @@
-import { Module, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
-import { ParkingSpace } from './parking-space.entity';
-import { ParkingService } from './parking.service';
-import { ParkingController } from './parking.controller';
-import { Repository } from 'typeorm';
+import { Module, OnApplicationBootstrap } from "@nestjs/common";
+import { InjectRepository, TypeOrmModule } from "@nestjs/typeorm";
+import { ParkingSpace } from "./parking-space.entity";
+import { ParkingService } from "./parking.service";
+import { ParkingController } from "./parking.controller";
+import { Repository } from "typeorm";
+
 
 @Module({
     imports: [TypeOrmModule.forFeature([ParkingSpace])],
