@@ -1,8 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getAll, leave, take } from './parkingAPI';
 import { RootState } from '../../app/store';
-import { useDispatch } from 'react-redux';
-import { useAppDispatch } from '../../app/hooks';
 
 export interface ParkingSpace {
     id: number;
@@ -59,7 +57,7 @@ export const parkingSlice = createSlice({
     },
 });
   
-export const { } = parkingSlice.actions;
+//export const { } = parkingSlice.actions;
 
 export const selectParkingSpaces = (state: RootState) => state.parking.parkingSpaces;
 
