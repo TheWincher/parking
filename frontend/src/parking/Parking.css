@@ -1,0 +1,38 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.center > td {
+    border: 0;
+}
+
+.top > td {
+    border-top: 2px solid black;
+    border-right: 2px solid black;
+    border-left: 2px solid black;
+}
+
+td.entry, .bottom td.entry {
+    border: 0;
+}
+
+.bottom > td {
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    border-left: 2px solid black;
+}
+
+.disabled {
+    background-color: orange;
+}
+
+.taken {
+    background-color: red;
+    color: white;
+}
+
+td {
+    height: 100px;
+    width: 50px;
+}
