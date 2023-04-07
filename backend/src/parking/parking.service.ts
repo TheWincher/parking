@@ -23,7 +23,7 @@ export class ParkingService {
     async leave(id: number): Promise<void> {
         var parkingSpace = await this.parkingSpaceRepository.findOneBy({id: id});
         if(parkingSpace == undefined) {
-            throw new HttpException(`La place n°${id} n'existe pas `, HttpStatus.NOT_FOUND)
+            throw new HttpException(`La place n°${id} n'existe pas`, HttpStatus.NOT_FOUND)
         } else if(parkingSpace.free) {
             throw new HttpException(`La place n°${id} n'est pas occupé`, HttpStatus.BAD_REQUEST)
         }

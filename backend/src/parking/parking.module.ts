@@ -16,7 +16,7 @@ export class ParkingModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         var parkingSpaces: ParkingSpace[] = []; 
-        for(var id = 0; id < 20; id++) {
+        for(var id = 0; id < 18; id++) {
             parkingSpaces.push({id: id, free: true});
         }
 

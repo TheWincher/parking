@@ -15,36 +15,55 @@ function Parking() {
 
     let rows = [];
     let columns = [];
-    for(var parkingSpace of parkingSpaces) {
+    for(let index = 0; index < parkingSpaces.length; index++) {
+        const parkingSpace = parkingSpaces[index];
         if(parkingSpace.id % 5 === 4) {
-            let className = '';
-            switch(rows.length % 3) {
-                case 0 : className = 'top';
-                break;
-                case 1: className = 'center';
-                break;
-                case 2: className = 'bottom';
-                break;
+            columns.push(<td key={parkingSpace.id} className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
+            if(columns.length < 6) {
+                for(let i = columns.length; columns.length < 6; i++) {
+                    columns.push(<td key={`empty_${i}`}></td>);
+                }
             }
+            columns.push(<td key={`${rows.length}_last`} className='entry'></td>);
 
-            columns.push(<td className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
-            columns.push(<td className='entry'></td>);
-            rows.push(<tr key={parkingSpace.id} className={className}>{columns}</tr>);
+            rows.push(<tr key={rows.length} className={getRowClassName(rows.length)}>{columns}</tr>);
             columns = [];
 
             if(rows.length % 3 === 1) {
-                columns.push(<td className='entry'></td>);
-                columns.fill(<td></td>)
-                columns.push(<td className='entry'></td>);
-                rows.push(<tr className='center'>{columns}</tr>);
+                columns.push(<td key={`${rows.length}_first`} className='entry'></td>);
+                for(let i = columns.length; columns.length < 6; i++) {
+                    columns.push(<td key={`center_${i}`}></td>);
+                }
+
+                columns.push(<td key={`${rows.length}_last`} className='entry'></td>);
+                rows.push(<tr key={rows.length} className='center'>{columns}</tr>);
                 columns = [];
             }
             
         } else if(parkingSpace.id % 5 === 0) {
-            columns.push(<td className='entry'></td>);
-            columns.push(<td className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
+            columns.push(<td key={`${rows.length}_first`} className='entry'></td>);
+            columns.push(<td key={parkingSpace.id} className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
+
+            if((index + 1) === parkingSpaces.length && columns.length < 6) {
+                for(let i = columns.length; columns.length < 6; i++) {
+                    columns.push(<td key={`empty_${i}`}></td>);
+                }
+
+                columns.push(<td key={`${rows.length}_last`} className='entry'></td>);
+                rows.push(<tr key={rows.length} className={getRowClassName(rows.length)}>{columns}</tr>);
+                columns = [];
+            }
         } else {
-            columns.push(<td className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
+            columns.push(<td key={parkingSpace.id} className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
+            if((index + 1) === parkingSpaces.length && columns.length < 7) {
+                for(let i = columns.length; columns.length < 6; i++) {
+                    columns.push(<td key={`empty_${i}`}></td>);
+                }
+
+                columns.push(<td key={`${rows.length}_last`} className='entry'></td>);
+                rows.push(<tr key={rows.length} className={getRowClassName(rows.length)}>{columns}</tr>);
+                columns = [];
+            }
         }
     }
 
@@ -53,7 +72,8 @@ function Parking() {
             <h1>Parking Simulator</h1>
             <button onClick={async () => {
                 let res = await dispatch(takeAsync());
-                if(res.payload) {
+                console.log(res);
+                if(res.payload != undefined) {
                     alert(`Vous avez la place n°${res.payload}`)
                     await dispatch(getAllAsync());
                 } else {
@@ -76,6 +96,16 @@ function Parking() {
             </table>
         </div>
     );
+}
+
+function getRowClassName(rowNumber: number) : string {
+    switch(rowNumber % 3) {
+        case 1: return 'center';
+        case 2: return 'bottom';
+        case 0 : 
+        default:
+            return 'top';
+    }
 }
 
 export default Parking;
