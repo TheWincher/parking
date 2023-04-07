@@ -1,11 +1,16 @@
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getAllAsync, leaveAsync, selectParkingSpaces, takeAsync } from '../features/parking/parkingSlice';
+import { getAllAsync, leaveAsync, selectInitialized, selectParkingSpaces, takeAsync } from '../features/parking/parkingSlice';
 import './Parking.css';
 
 function Parking() {
 
     const parkingSpaces = useAppSelector(selectParkingSpaces);
+    const initialized = useAppSelector(selectInitialized);
     const dispatch = useAppDispatch();
+
+    if(!initialized) {
+        dispatch(getAllAsync());
+    }
 
 
     let rows = [];
@@ -45,16 +50,25 @@ function Parking() {
 
     return (
         <div>
-            <button onClick={() => dispatch(getAllAsync())}>afficher les places</button>
+            <h1>Parking Simulator</h1>
             <button onClick={async () => {
                 let res = await dispatch(takeAsync());
-                await dispatch(getAllAsync());
-                alert(`Vous avez la place n°${res.payload}`)
-            }}>prendre un ticket</button>
+                if(res.payload) {
+                    alert(`Vous avez la place n°${res.payload}`)
+                    await dispatch(getAllAsync());
+                } else {
+                    alert(`Désolé, il n'y a plus de place disponible`)
+                }
+                
+            }}>Prendre un ticket</button>
             <button onClick={async () =>{
-                await dispatch(leaveAsync());
-                await dispatch(getAllAsync());
-            }}>liberer une place</button>
+                const res = await dispatch(leaveAsync()) as any;
+                if(res.error !== undefined) {
+                    alert(res.error.message)
+                } else {
+                    await dispatch(getAllAsync());
+                }
+            }}>Libérer une place</button>
             <table>
                 <tbody>
                 {rows}

@@ -21,5 +21,6 @@ export async function leave(id: number) : Promise<void> {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     });
-    return await response.json();
+
+    if(!response.ok) throw await response.json();
 }

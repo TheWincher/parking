@@ -9,10 +9,12 @@ export interface ParkingSpace {
 
 export interface ParkingState {
     parkingSpaces: ParkingSpace[];
+    initialized: boolean;
 }
 
 const initialState: ParkingState = {
     parkingSpaces: [],
+    initialized: false
 };
 
 export const getAllAsync = createAsyncThunk(
@@ -51,8 +53,7 @@ export const parkingSlice = createSlice({
     extraReducers: (builder) => {
         builder.addCase(getAllAsync.fulfilled, (state, action) => {
             state.parkingSpaces = action.payload;
-        })
-        .addCase(takeAsync.fulfilled, (state, action) => {
+            state.initialized = true;
         })
     },
 });
@@ -60,5 +61,6 @@ export const parkingSlice = createSlice({
 //export const { } = parkingSlice.actions;
 
 export const selectParkingSpaces = (state: RootState) => state.parking.parkingSpaces;
+export const selectInitialized = (state: RootState) => state.parking.initialized;
 
 export default parkingSlice.reducer;
