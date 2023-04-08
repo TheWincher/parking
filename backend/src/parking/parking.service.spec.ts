@@ -1,29 +1,38 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ParkingService } from './parking.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { FindOptionsWhere } from 'typeorm';
+import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { ParkingSpace } from './parking-space.entity';
+import { ParkingModule } from './parking.module';
+import { HttpException } from '@nestjs/common';
 
 describe('ParkingService', () => {
   let service: ParkingService;
 
-  const mockParkingRepository = {
-    findBy: jest.fn().mockImplementation((options : FindOptionsWhere<ParkingSpace>) => {
-      var parkingSpaces: ParkingSpace[] = []; 
-      for(var id = 0; id < 20; id++) {
-          parkingSpaces.push({id: id, free: true});
-      }
-
-      return Promise.resolve(parkingSpaces);
-    }),
+  type MockType<T> = {
+    [P in keyof T]?: jest.Mock<{}>;
   };
+
+  const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
+    findBy: jest.fn(),
+    // ...
+  }));
+
+  let repositoryMock: MockType<Repository<ParkingSpace>>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ParkingService, {provide: getRepositoryToken(ParkingService), useValue: mockParkingRepository}],
+      imports: [ParkingModule, TypeOrmModule.forRoot({
+        type: 'sqlite',
+        database: "parkingDB",
+        synchronize: true,
+        entities: [ParkingSpace]
+      })],
+      providers: [ParkingService, {provide: getRepositoryToken(ParkingSpace), useValue: repositoryMockFactory}],
     }).compile();
 
     service = module.get<ParkingService>(ParkingService);
+    repositoryMock = module.get(getRepositoryToken(ParkingSpace))
   });
 
   it('should be defined', () => {
@@ -33,9 +42,46 @@ describe('ParkingService', () => {
   describe('take', () => {
     it('take with parking spaces free', async () => {
       const result = 0;
-      jest.spyOn(mockParkingRepository, 'findBy').mockImplementation((options : FindOptionsWhere<ParkingSpace>) => []);
 
-      expect(await service.take()).toBe(undefined);
+      var parkingSpaces: ParkingSpace[] = []; 
+        for(var id = 0; id < 18; id++) {
+            parkingSpaces.push({id: id, free: true});
+        }
+      
+      jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => parkingSpaces);
+      expect(service.take()).resolves.toBe(result);
+    });
+
+    it('take without parking spaces free', async () => {
+      const result = undefined;
+      
+      jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => []);
+      expect(service.take()).resolves.toBe(result);
+    })
+  })
+
+  describe('leave', () => {
+    it('leave occupied', async () => {
+      const result = undefined;
+      const parkingSpace : ParkingSpace = {id: 0, free: false}; 
+      
+      jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => parkingSpace);
+      expect(service.leave(0)).resolves.toBe(result);
+    });
+
+    it('leave free', async () => {
+      const result = undefined;
+      const parkingSpace : ParkingSpace = {id: 0, free: true};
+      
+      jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => []);
+      expect(service.leave(0)).rejects.toThrow(HttpException);
+    })
+
+    it('leave non existing', async () => {
+      const result = undefined;
+      
+      jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => undefined);
+      expect(service.leave(0)).rejects.toThrow(HttpException);
     })
   })
 });
