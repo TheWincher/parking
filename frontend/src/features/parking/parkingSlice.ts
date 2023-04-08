@@ -36,11 +36,11 @@ export const leaveAsync = createAsyncThunk(
     async () => {
         let id = prompt('Numéro de la place');
         console.log('id', id);
-        while(id === '' || id !== null && Number.isNaN(+id)) {
+        while(id === '' || (id !== null && Number.isNaN(+id))) {
             id = prompt('Veuillez entrer un numéro de place valide');
         }
 
-        if(id === '' || id !== null && Number.isNaN(+id)) {
+        if(id === '' || (id !== null && Number.isNaN(+id))) {
             alert('Veuillez entrer un numéro de place valide')
         }else if(id) {
             return await leave(+id);
