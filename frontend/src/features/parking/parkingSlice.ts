@@ -35,10 +35,16 @@ export const leaveAsync = createAsyncThunk(
     'parking/take',
     async () => {
         let id = prompt('Numéro de la place');
-        if(id) {
+        console.log('id', id);
+        while(id === '' || id !== null && Number.isNaN(+id)) {
+            id = prompt('Veuillez entrer un numéro de place valide');
+        }
+
+        if(id === '' || id !== null && Number.isNaN(+id)) {
+            alert('Veuillez entrer un numéro de place valide')
+        }else if(id) {
             return await leave(+id);
         }
-      
     }
 );
 

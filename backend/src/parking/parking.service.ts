@@ -22,10 +22,10 @@ export class ParkingService {
 
     async leave(id: number): Promise<void> {
         var parkingSpace = await this.parkingSpaceRepository.findOneBy({id: id});
-        if(parkingSpace == undefined) {
+        if(!parkingSpace) {
             throw new HttpException(`La place n°${id} n'existe pas`, HttpStatus.NOT_FOUND)
         } else if(parkingSpace.free) {
-            throw new HttpException(`La place n°${id} n'est pas occupé`, HttpStatus.BAD_REQUEST)
+            throw new HttpException(`La place n°${id} est déjà libre`, HttpStatus.BAD_REQUEST)
         }
 
         parkingSpace.free = true;

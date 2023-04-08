@@ -16,10 +16,11 @@ export class ParkingModule implements OnApplicationBootstrap {
 
     async onApplicationBootstrap(): Promise<void> {
         var parkingSpaces: ParkingSpace[] = []; 
-        for(var id = 0; id < 18; id++) {
+        for(var id = 1; id <= 20; id++) {
             parkingSpaces.push({id: id, free: true});
         }
 
+        await this.parkingSpaceRepository.clear();
         await this.parkingSpaceRepository.save(parkingSpaces);
     }
 }

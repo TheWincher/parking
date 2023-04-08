@@ -17,7 +17,7 @@ function Parking() {
     let columns = [];
     for(let index = 0; index < parkingSpaces.length; index++) {
         const parkingSpace = parkingSpaces[index];
-        if(parkingSpace.id % 5 === 4) {
+        if(parkingSpace.id % 5 === 0) {
             columns.push(<td key={parkingSpace.id} className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
             if(columns.length < 6) {
                 for(let i = columns.length; columns.length < 6; i++) {
@@ -40,7 +40,7 @@ function Parking() {
                 columns = [];
             }
             
-        } else if(parkingSpace.id % 5 === 0) {
+        } else if(parkingSpace.id % 5 === 1) {
             columns.push(<td key={`${rows.length}_first`} className='entry'></td>);
             columns.push(<td key={parkingSpace.id} className={parkingSpace.free ? '' : 'taken'}>{parkingSpace.id}</td>);
 
@@ -72,8 +72,7 @@ function Parking() {
             <h1>Parking Simulator</h1>
             <button onClick={async () => {
                 let res = await dispatch(takeAsync());
-                console.log(res);
-                if(res.payload != undefined) {
+                if(res.payload !== undefined) {
                     alert(`Vous avez la place n°${res.payload}`)
                     await dispatch(getAllAsync());
                 } else {
