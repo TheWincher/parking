@@ -12,12 +12,15 @@ import { Repository } from "typeorm";
     controllers: [ParkingController]
 })
 export class ParkingModule implements OnApplicationBootstrap {
-    constructor(@InjectRepository(ParkingSpace) private parkingSpaceRepository: Repository<ParkingSpace>) {}
+    constructor(@InjectRepository(ParkingSpace) private parkingSpaceRepository: Repository<ParkingSpace>) { }
 
+    /**
+     * Au démarrage de l'application on clean la BDD et on l'initialise avec 20 places libres
+     */
     async onApplicationBootstrap(): Promise<void> {
-        var parkingSpaces: ParkingSpace[] = []; 
-        for(var id = 1; id <= 20; id++) {
-            parkingSpaces.push({id: id, free: true});
+        var parkingSpaces: ParkingSpace[] = [];
+        for (var id = 1; id <= 20; id++) {
+            parkingSpaces.push({ id: id, free: true });
         }
 
         await this.parkingSpaceRepository.clear();

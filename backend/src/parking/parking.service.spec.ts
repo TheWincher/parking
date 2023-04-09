@@ -16,7 +16,6 @@ describe('ParkingService', () => {
   const repositoryMockFactory: () => MockType<Repository<any>> = jest.fn(() => ({
     findBy: jest.fn(),
     findOneBy: jest.fn()
-    // ...
   }));
 
   let repositoryMock: MockType<Repository<ParkingSpace>>;
@@ -29,7 +28,7 @@ describe('ParkingService', () => {
         synchronize: true,
         entities: [ParkingSpace]
       })],
-      providers: [ParkingService, {provide: getRepositoryToken(ParkingSpace), useValue: repositoryMockFactory}],
+      providers: [ParkingService, { provide: getRepositoryToken(ParkingSpace), useValue: repositoryMockFactory }],
     }).compile();
 
     service = module.get<ParkingService>(ParkingService);
@@ -44,18 +43,18 @@ describe('ParkingService', () => {
     it('take with parking spaces free', async () => {
       const result = 0;
 
-      var parkingSpaces: ParkingSpace[] = []; 
-        for(var id = 0; id < 18; id++) {
-            parkingSpaces.push({id: id, free: true});
-        }
-      
+      var parkingSpaces: ParkingSpace[] = [];
+      for (var id = 0; id < 18; id++) {
+        parkingSpaces.push({ id: id, free: true });
+      }
+
       jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => parkingSpaces);
       expect(service.take()).resolves.toBe(result);
     });
 
     it('take without parking spaces free', async () => {
       const result = undefined;
-      
+
       jest.spyOn(repositoryMock, 'findBy').mockImplementation(() => []);
       expect(service.take()).resolves.toBe(result);
     })
@@ -64,16 +63,16 @@ describe('ParkingService', () => {
   describe('leave', () => {
     it('not free', async () => {
       const result = undefined;
-      const parkingSpace : ParkingSpace = {id: 0, free: false}; 
-      
+      const parkingSpace: ParkingSpace = { id: 0, free: false };
+
       jest.spyOn(repositoryMock, 'findOneBy').mockImplementation(() => parkingSpace);
       expect(service.leave(0)).resolves.toBe(result);
     });
 
     it('leave free', async () => {
       const result = undefined;
-      const parkingSpace : ParkingSpace = {id: 0, free: true};
-      
+      const parkingSpace: ParkingSpace = { id: 0, free: true };
+
       jest.spyOn(repositoryMock, 'findOneBy').mockImplementation(() => parkingSpace);
       expect(service.leave(parkingSpace.id)).rejects.toThrow(HttpException);
       expect(service.leave(parkingSpace.id)).rejects.toThrow(`La place n°${parkingSpace.id} n'est pas occupé`);
@@ -82,7 +81,7 @@ describe('ParkingService', () => {
     it('leave non existing', async () => {
       const result = undefined;
       const id = 0;
-      
+
       jest.spyOn(repositoryMock, 'findOneBy').mockImplementation(() => undefined);
       expect(service.leave(id)).rejects.toThrow(HttpException);
       expect(service.leave(id)).rejects.toThrow(`La place n°${id} n'existe pas`);
