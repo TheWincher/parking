@@ -14,3 +14,15 @@ L'utilisateur à la possibilité de :
 - Backend: NestJS
 - BDD: Sqflite
 
+## Démarrage
+
+### Backend
+
+1. ```cd ~/parking/backend ``` 
+2. ```npm run start ``` 
+
+### Frontend
+
+1. ```cd ~/parking/frontend ``` 
+2. ```npm run start ``` 
+
